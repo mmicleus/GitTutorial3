@@ -77,3 +77,56 @@ footer {
   color: #4a6b64;
   font-size: 0.9rem;
 }
+
+.site-nav {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.site-nav a {
+  color: #2d6a5a;
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.site-nav a:hover,
+.site-nav a[aria-current="page"] {
+  text-decoration: underline;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  gap: 1.25rem;
+  max-width: 56rem;
+  margin: 0 auto;
+}
+
+main:has(.gallery) {
+  max-width: 56rem;
+}
+
+.gallery figure {
+  margin: 0;
+}
+
+.gallery img {
+  display: block;
+  width: 100%;
+  height: 12rem;
+  object-fit: cover;
+  border-radius: 4px;
+  background: #b8cbc5;
+}
+
+.gallery figcaption {
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+  color: #2a3d3a;
+}
+
+header:has(+ main .gallery),
+main:has(.gallery) + footer {
+  max-width: 56rem;
+}
