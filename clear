@@ -1,0 +1,32 @@
+[33mcommit c3a43f5d0cfaec11adef5a32e6cae683ec46a9e6[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m
+Merge: f4ddd1e 05f1b9b
+Author: Marik Micleusanu <36306873+mmicleus@users.noreply.github.com>
+Date:   Sun Sep 13 12:34:34 2026 +0100
+
+    Merge pull request #1 from mmicleus/car-gallery
+    
+    created gallery page
+
+[33mcommit 05f1b9b020af00f93c0bc567f2068e5a16e1419d[m[33m ([m[1;31morigin/car-gallery[m[33m)[m
+Author: MarikMicle007 <X00229865@myTUDublin.ie>
+Date:   Sun Sep 13 12:32:09 2026 +0100
+
+    created gallery page
+
+[33mcommit f4ddd1e8e4581787c305ebac90181cda738f4bb6[m
+Author: MarikMicle007 <X00229865@myTUDublin.ie>
+Date:   Sun Sep 13 12:25:52 2026 +0100
+
+    deleted 1 line
+
+[33mcommit 51346e8b7981e2cd2ff465ad07ab4317500c2643[m
+Author: MarikMicle007 <X00229865@myTUDublin.ie>
+Date:   Sun Sep 13 12:17:17 2026 +0100
+
+    added picture
+
+[33mcommit b632ffc00b0362dda8c481c07d82655e936bc8b0[m
+Author: MarikMicle007 <X00229865@myTUDublin.ie>
+Date:   Sun Sep 13 12:10:33 2026 +0100
+
+    Created HTM and CSS files
