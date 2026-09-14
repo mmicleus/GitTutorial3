@@ -130,3 +130,176 @@ header:has(+ main .gallery),
 main:has(.gallery) + footer {
   max-width: 56rem;
 }
+
+/* —— Landing page —— */
+body.landing {
+  padding: 0;
+  background: #1c2421;
+  font-family: "Outfit", "Segoe UI", sans-serif;
+  color: #f2f5f3;
+}
+
+.hero {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  align-items: end;
+  overflow: hidden;
+}
+
+.hero-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 40%;
+  z-index: 0;
+  animation: hero-zoom 18s ease-out forwards;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(
+      to top,
+      rgba(12, 18, 16, 0.88) 0%,
+      rgba(12, 18, 16, 0.45) 42%,
+      rgba(12, 18, 16, 0.2) 100%
+    );
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  width: min(40rem, calc(100% - 3rem));
+  margin: 0 auto 0 0;
+  padding: 2rem 1.5rem 3.5rem;
+  animation: hero-rise 1s ease-out both;
+}
+
+@media (min-width: 48rem) {
+  .hero-content {
+    padding: 2.5rem 4rem 4.5rem;
+    width: min(36rem, 50%);
+  }
+}
+
+.hero-nav {
+  display: flex;
+  gap: 1.25rem;
+  margin-bottom: 2.5rem;
+  animation: hero-rise 0.9s ease-out 0.1s both;
+}
+
+.hero-nav a {
+  color: #e8eeeb;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.hero-nav a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
+}
+
+.brand {
+  font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+  font-size: clamp(3.5rem, 12vw, 6.5rem);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #f7faf8;
+  margin-bottom: 0.75rem;
+  animation: hero-rise 1s ease-out 0.15s both;
+}
+
+.hero h1 {
+  font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+  font-size: clamp(1.6rem, 4.2vw, 2.35rem);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: 0.02em;
+  color: #dce6e1;
+  margin-bottom: 0.85rem;
+  max-width: 18ch;
+  animation: hero-rise 1s ease-out 0.25s both;
+}
+
+.hero-lead {
+  font-size: 1.05rem;
+  line-height: 1.5;
+  color: #b8c7c0;
+  margin-bottom: 1.75rem;
+  max-width: 28ch;
+  animation: hero-rise 1s ease-out 0.35s both;
+}
+
+.hero-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem 1.25rem;
+  align-items: center;
+  animation: hero-rise 1s ease-out 0.45s both;
+}
+
+.cta-primary {
+  display: inline-block;
+  padding: 0.85rem 1.5rem;
+  background: #e8f1ef;
+  color: #14201c;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.03em;
+  transition: transform 0.25s ease, background-color 0.25s ease;
+}
+
+.cta-primary:hover {
+  background: #ffffff;
+  transform: translateY(-2px);
+}
+
+.cta-secondary {
+  color: #e8eeeb;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  border-bottom: 1px solid rgba(232, 238, 235, 0.55);
+  padding-bottom: 0.15rem;
+  transition: border-color 0.25s ease, color 0.25s ease;
+}
+
+.cta-secondary:hover {
+  color: #ffffff;
+  border-color: #ffffff;
+}
+
+@keyframes hero-zoom {
+  from {
+    transform: scale(1.08);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(1.25rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
