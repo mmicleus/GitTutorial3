@@ -18,7 +18,17 @@
 
   <main>
     <section class="gallery" aria-label="Car image gallery">
-      <figure>
+      <figure
+        class="gallery-item"
+        tabindex="0"
+        role="button"
+        aria-haspopup="dialog"
+        data-name="BMW Coupe"
+        data-make="BMW"
+        data-year="2019"
+        data-engine="3.0L Twin-Turbo I6"
+        data-description="A sharp two-door coupe with balanced handling and everyday usability. Known for its precise steering and refined cabin."
+      >
         <img
           src="https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800&q=80"
           alt="Blue BMW parked on a street"
@@ -28,7 +38,17 @@
         <figcaption>BMW Coupe</figcaption>
       </figure>
 
-      <figure>
+      <figure
+        class="gallery-item"
+        tabindex="0"
+        role="button"
+        aria-haspopup="dialog"
+        data-name="Classic Muscle"
+        data-make="American Classic"
+        data-year="1969"
+        data-engine="V8"
+        data-description="A timeless muscle car with bold lines and raw power. Built for straight-line speed and unmistakable road presence."
+      >
         <img
           src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=800&q=80"
           alt="Classic black muscle car"
@@ -38,7 +58,17 @@
         <figcaption>Classic Muscle</figcaption>
       </figure>
 
-      <figure>
+      <figure
+        class="gallery-item"
+        tabindex="0"
+        role="button"
+        aria-haspopup="dialog"
+        data-name="Porsche 911"
+        data-make="Porsche"
+        data-year="2020"
+        data-engine="3.0L Twin-Turbo Flat-6"
+        data-description="An iconic sports car with rear-engine layout and exceptional balance. Celebrated for its driving feel and everyday performance."
+      >
         <img
           src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&q=80"
           alt="Silver Porsche sports car"
@@ -48,7 +78,17 @@
         <figcaption>Porsche 911</figcaption>
       </figure>
 
-      <figure>
+      <figure
+        class="gallery-item"
+        tabindex="0"
+        role="button"
+        aria-haspopup="dialog"
+        data-name="Track Day"
+        data-make="Performance Spec"
+        data-year="2018"
+        data-engine="High-output V8"
+        data-description="A track-focused sports car set up for grip and speed. Aggressive styling matched with strong acceleration and braking."
+      >
         <img
           src="https://images.unsplash.com/photo-1542362567-b07e54358753?w=800&q=80"
           alt="Red sports car on a track"
@@ -58,7 +98,17 @@
         <figcaption>Track Day</figcaption>
       </figure>
 
-      <figure>
+      <figure
+        class="gallery-item"
+        tabindex="0"
+        role="button"
+        aria-haspopup="dialog"
+        data-name="Luxury Sedan"
+        data-make="Premium"
+        data-year="2021"
+        data-engine="3.0L Turbocharged"
+        data-description="A comfortable executive sedan with a quiet cabin and refined ride. Designed for long journeys without sacrificing style."
+      >
         <img
           src="https://images.unsplash.com/photo-1511919884225-912b6d9bd0f5?w=800&q=80"
           alt="White luxury sedan"
@@ -68,7 +118,17 @@
         <figcaption>Luxury Sedan</figcaption>
       </figure>
 
-      <figure>
+      <figure
+        class="gallery-item"
+        tabindex="0"
+        role="button"
+        aria-haspopup="dialog"
+        data-name="Mercedes-AMG"
+        data-make="Mercedes-AMG"
+        data-year="2022"
+        data-engine="4.0L Twin-Turbo V8"
+        data-description="An AMG performance model blending luxury with serious power. Sharp looks, strong soundtrack, and confident road manners."
+      >
         <img
           src="https://images.unsplash.com/photo-1617531653332-bd46c24f7060?w=800&q=80"
           alt="Grey Mercedes-AMG car"
@@ -80,8 +140,104 @@
     </section>
   </main>
 
+  <div
+    class="modal"
+    id="car-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modal-title"
+    hidden
+  >
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-panel">
+      <button type="button" class="modal-close" data-close-modal aria-label="Close">&times;</button>
+      <img class="modal-image" id="modal-image" src="" alt="">
+      <div class="modal-body">
+        <h2 id="modal-title"></h2>
+        <dl class="modal-details">
+          <div>
+            <dt>Make</dt>
+            <dd id="modal-make"></dd>
+          </div>
+          <div>
+            <dt>Year</dt>
+            <dd id="modal-year"></dd>
+          </div>
+          <div>
+            <dt>Engine</dt>
+            <dd id="modal-engine"></dd>
+          </div>
+        </dl>
+        <p id="modal-description"></p>
+      </div>
+    </div>
+  </div>
+
   <footer>
     <p>Image gallery example</p>
   </footer>
+
+  <script>
+    (function () {
+      const modal = document.getElementById("car-modal");
+      const modalImage = document.getElementById("modal-image");
+      const modalTitle = document.getElementById("modal-title");
+      const modalMake = document.getElementById("modal-make");
+      const modalYear = document.getElementById("modal-year");
+      const modalEngine = document.getElementById("modal-engine");
+      const modalDescription = document.getElementById("modal-description");
+      const items = document.querySelectorAll(".gallery-item");
+      let lastFocused = null;
+
+      function openModal(item) {
+        const img = item.querySelector("img");
+        lastFocused = document.activeElement;
+
+        modalImage.src = img.src;
+        modalImage.alt = img.alt;
+        modalTitle.textContent = item.dataset.name;
+        modalMake.textContent = item.dataset.make;
+        modalYear.textContent = item.dataset.year;
+        modalEngine.textContent = item.dataset.engine;
+        modalDescription.textContent = item.dataset.description;
+
+        modal.hidden = false;
+        document.body.classList.add("modal-open");
+        modal.querySelector(".modal-close").focus();
+      }
+
+      function closeModal() {
+        modal.hidden = true;
+        document.body.classList.remove("modal-open");
+        modalImage.removeAttribute("src");
+        if (lastFocused) lastFocused.focus();
+      }
+
+      items.forEach(function (item) {
+        item.addEventListener("click", function () {
+          openModal(item);
+        });
+
+        item.addEventListener("keydown", function (event) {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            openModal(item);
+          }
+        });
+      });
+
+      modal.addEventListener("click", function (event) {
+        if (event.target.closest("[data-close-modal]")) {
+          closeModal();
+        }
+      });
+
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape" && !modal.hidden) {
+          closeModal();
+        }
+      });
+    })();
+  </script>
 </body>
 </html>
