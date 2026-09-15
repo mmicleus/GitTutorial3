@@ -35,7 +35,10 @@
           width="800"
           height="600"
         >
-        <figcaption>BMW Coupe</figcaption>
+        <figcaption>
+          BMW Coupe
+          <span class="gallery-rating" aria-label="Your rating: not rated">Not rated</span>
+        </figcaption>
       </figure>
 
       <figure
@@ -55,7 +58,10 @@
           width="800"
           height="600"
         >
-        <figcaption>Classic Muscle</figcaption>
+        <figcaption>
+          Classic Muscle
+          <span class="gallery-rating" aria-label="Your rating: not rated">Not rated</span>
+        </figcaption>
       </figure>
 
       <figure
@@ -75,7 +81,10 @@
           width="800"
           height="600"
         >
-        <figcaption>Porsche 911</figcaption>
+        <figcaption>
+          Porsche 911
+          <span class="gallery-rating" aria-label="Your rating: not rated">Not rated</span>
+        </figcaption>
       </figure>
 
       <figure
@@ -95,7 +104,10 @@
           width="800"
           height="600"
         >
-        <figcaption>Track Day</figcaption>
+        <figcaption>
+          Track Day
+          <span class="gallery-rating" aria-label="Your rating: not rated">Not rated</span>
+        </figcaption>
       </figure>
 
       <figure
@@ -115,7 +127,10 @@
           width="800"
           height="600"
         >
-        <figcaption>Luxury Sedan</figcaption>
+        <figcaption>
+          Luxury Sedan
+          <span class="gallery-rating" aria-label="Your rating: not rated">Not rated</span>
+        </figcaption>
       </figure>
 
       <figure
@@ -135,7 +150,10 @@
           width="800"
           height="600"
         >
-        <figcaption>Mercedes-AMG</figcaption>
+        <figcaption>
+          Mercedes-AMG
+          <span class="gallery-rating" aria-label="Your rating: not rated">Not rated</span>
+        </figcaption>
       </figure>
     </section>
   </main>
@@ -169,6 +187,19 @@
           </div>
         </dl>
         <p id="modal-description"></p>
+
+        <div class="rating" role="group" aria-labelledby="rating-label">
+          <p id="rating-label" class="rating-label">Your rating</p>
+          <div class="rating-stars" id="rating-stars">
+            <button type="button" class="star" data-value="1" aria-label="1 star">★</button>
+            <button type="button" class="star" data-value="2" aria-label="2 stars">★</button>
+            <button type="button" class="star" data-value="3" aria-label="3 stars">★</button>
+            <button type="button" class="star" data-value="4" aria-label="4 stars">★</button>
+            <button type="button" class="star" data-value="5" aria-label="5 stars">★</button>
+          </div>
+          <p class="rating-value" id="rating-value">Not rated</p>
+          <button type="button" class="rating-clear" id="rating-clear">Clear rating</button>
+        </div>
       </div>
     </div>
   </div>
@@ -179,6 +210,7 @@
 
   <script>
     (function () {
+      const STORAGE_KEY = "car-gallery-ratings";
       const modal = document.getElementById("car-modal");
       const modalImage = document.getElementById("modal-image");
       const modalTitle = document.getElementById("modal-title");
@@ -186,12 +218,75 @@
       const modalYear = document.getElementById("modal-year");
       const modalEngine = document.getElementById("modal-engine");
       const modalDescription = document.getElementById("modal-description");
+      const ratingStars = document.getElementById("rating-stars");
+      const ratingValue = document.getElementById("rating-value");
+      const ratingClear = document.getElementById("rating-clear");
+      const starButtons = ratingStars.querySelectorAll(".star");
       const items = document.querySelectorAll(".gallery-item");
       let lastFocused = null;
+      let activeItem = null;
+
+      function loadRatings() {
+        try {
+          return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+        } catch (error) {
+          return {};
+        }
+      }
+
+      function saveRatings(ratings) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(ratings));
+      }
+
+      function getRating(carName) {
+        const ratings = loadRatings();
+        const value = Number(ratings[carName]);
+        return Number.isInteger(value) && value >= 0 && value <= 5 ? value : 0;
+      }
+
+      function setRating(carName, value) {
+        const ratings = loadRatings();
+        if (value <= 0) {
+          delete ratings[carName];
+        } else {
+          ratings[carName] = value;
+        }
+        saveRatings(ratings);
+      }
+
+      function formatRatingLabel(value) {
+        if (value <= 0) return "Not rated";
+        return value === 1 ? "1 star" : value + " stars";
+      }
+
+      function formatRatingDisplay(value) {
+        if (value <= 0) return "Not rated";
+        return "★".repeat(value) + "☆".repeat(5 - value) + " (" + value + "/5)";
+      }
+
+      function updateGalleryRating(item) {
+        const value = getRating(item.dataset.name);
+        const label = item.querySelector(".gallery-rating");
+        if (!label) return;
+        label.textContent = formatRatingDisplay(value);
+        label.setAttribute("aria-label", "Your rating: " + formatRatingLabel(value).toLowerCase());
+      }
+
+      function paintStars(value) {
+        starButtons.forEach(function (button) {
+          const starValue = Number(button.dataset.value);
+          const isActive = starValue <= value;
+          button.classList.toggle("is-active", isActive);
+          button.setAttribute("aria-pressed", isActive ? "true" : "false");
+        });
+        ratingValue.textContent = formatRatingLabel(value);
+        ratingClear.hidden = value <= 0;
+      }
 
       function openModal(item) {
         const img = item.querySelector("img");
         lastFocused = document.activeElement;
+        activeItem = item;
 
         modalImage.src = img.src;
         modalImage.alt = img.alt;
@@ -200,6 +295,7 @@
         modalYear.textContent = item.dataset.year;
         modalEngine.textContent = item.dataset.engine;
         modalDescription.textContent = item.dataset.description;
+        paintStars(getRating(item.dataset.name));
 
         modal.hidden = false;
         document.body.classList.add("modal-open");
@@ -210,10 +306,13 @@
         modal.hidden = true;
         document.body.classList.remove("modal-open");
         modalImage.removeAttribute("src");
+        activeItem = null;
         if (lastFocused) lastFocused.focus();
       }
 
       items.forEach(function (item) {
+        updateGalleryRating(item);
+
         item.addEventListener("click", function () {
           openModal(item);
         });
@@ -224,6 +323,26 @@
             openModal(item);
           }
         });
+      });
+
+      ratingStars.addEventListener("click", function (event) {
+        const button = event.target.closest(".star");
+        if (!button || !activeItem) return;
+
+        const nextValue = Number(button.dataset.value);
+        const currentValue = getRating(activeItem.dataset.name);
+        const value = currentValue === nextValue ? 0 : nextValue;
+
+        setRating(activeItem.dataset.name, value);
+        paintStars(value);
+        updateGalleryRating(activeItem);
+      });
+
+      ratingClear.addEventListener("click", function () {
+        if (!activeItem) return;
+        setRating(activeItem.dataset.name, 0);
+        paintStars(0);
+        updateGalleryRating(activeItem);
       });
 
       modal.addEventListener("click", function (event) {
