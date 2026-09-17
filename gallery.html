@@ -156,6 +156,50 @@
         </figcaption>
       </figure>
     </section>
+
+    <section class="add-car" aria-labelledby="add-car-heading">
+      <h2 id="add-car-heading">Add a car</h2>
+      <p>Fill in the details below to add a new car to the gallery.</p>
+
+      <form class="add-car-form" id="add-car-form">
+        <div class="form-row">
+          <div>
+            <label for="car-name">Name</label>
+            <input type="text" id="car-name" name="name" required maxlength="80" placeholder="e.g. Audi R8">
+          </div>
+          <div>
+            <label for="car-make">Make</label>
+            <input type="text" id="car-make" name="make" required maxlength="80" placeholder="e.g. Audi">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div>
+            <label for="car-year">Year</label>
+            <input type="number" id="car-year" name="year" required min="1886" max="2100" placeholder="e.g. 2023">
+          </div>
+          <div>
+            <label for="car-engine">Engine</label>
+            <input type="text" id="car-engine" name="engine" required maxlength="100" placeholder="e.g. 5.2L V10">
+          </div>
+        </div>
+
+        <div>
+          <label for="car-image">Image URL</label>
+          <input type="url" id="car-image" name="imageUrl" required placeholder="https://example.com/car.jpg">
+        </div>
+
+        <div>
+          <label for="car-description">Description</label>
+          <textarea id="car-description" name="description" required maxlength="400" placeholder="A short description of the car"></textarea>
+        </div>
+
+        <div class="add-car-actions">
+          <button type="submit">Add to gallery</button>
+          <p class="add-car-status" id="add-car-status" aria-live="polite"></p>
+        </div>
+      </form>
+    </section>
   </main>
 
   <div
@@ -210,7 +254,11 @@
 
   <script>
     (function () {
-      const STORAGE_KEY = "car-gallery-ratings";
+      const RATINGS_KEY = "car-gallery-ratings";
+      const CUSTOM_CARS_KEY = "car-gallery-custom-cars";
+      const gallery = document.querySelector(".gallery");
+      const addCarForm = document.getElementById("add-car-form");
+      const addCarStatus = document.getElementById("add-car-status");
       const modal = document.getElementById("car-modal");
       const modalImage = document.getElementById("modal-image");
       const modalTitle = document.getElementById("modal-title");
@@ -222,20 +270,40 @@
       const ratingValue = document.getElementById("rating-value");
       const ratingClear = document.getElementById("rating-clear");
       const starButtons = ratingStars.querySelectorAll(".star");
-      const items = document.querySelectorAll(".gallery-item");
       let lastFocused = null;
       let activeItem = null;
 
-      function loadRatings() {
+      function loadJson(key) {
         try {
-          return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+          return JSON.parse(localStorage.getItem(key)) || {};
         } catch (error) {
           return {};
         }
       }
 
+      function saveJson(key, value) {
+        localStorage.setItem(key, JSON.stringify(value));
+      }
+
+      function loadRatings() {
+        return loadJson(RATINGS_KEY);
+      }
+
       function saveRatings(ratings) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(ratings));
+        saveJson(RATINGS_KEY, ratings);
+      }
+
+      function loadCustomCars() {
+        try {
+          const cars = JSON.parse(localStorage.getItem(CUSTOM_CARS_KEY));
+          return Array.isArray(cars) ? cars : [];
+        } catch (error) {
+          return [];
+        }
+      }
+
+      function saveCustomCars(cars) {
+        localStorage.setItem(CUSTOM_CARS_KEY, JSON.stringify(cars));
       }
 
       function getRating(carName) {
@@ -252,6 +320,15 @@
           ratings[carName] = value;
         }
         saveRatings(ratings);
+      }
+
+      function isValidImageUrl(url) {
+        try {
+          const parsed = new URL(url);
+          return parsed.protocol === "http:" || parsed.protocol === "https:";
+        } catch (error) {
+          return false;
+        }
       }
 
       function formatRatingLabel(value) {
@@ -310,7 +387,10 @@
         if (lastFocused) lastFocused.focus();
       }
 
-      items.forEach(function (item) {
+      function bindGalleryItem(item) {
+        if (item.dataset.bound === "true") return;
+        item.dataset.bound = "true";
+
         updateGalleryRating(item);
 
         item.addEventListener("click", function () {
@@ -323,6 +403,103 @@
             openModal(item);
           }
         });
+      }
+
+      function createGalleryItem(car) {
+        const figure = document.createElement("figure");
+        figure.className = "gallery-item";
+        figure.tabIndex = 0;
+        figure.setAttribute("role", "button");
+        figure.setAttribute("aria-haspopup", "dialog");
+        figure.dataset.name = car.name;
+        figure.dataset.make = car.make;
+        figure.dataset.year = String(car.year);
+        figure.dataset.engine = car.engine;
+        figure.dataset.description = car.description;
+
+        const img = document.createElement("img");
+        img.src = car.imageUrl;
+        img.alt = car.alt || car.name;
+        img.width = 800;
+        img.height = 600;
+
+        const figcaption = document.createElement("figcaption");
+        figcaption.appendChild(document.createTextNode(car.name));
+
+        const rating = document.createElement("span");
+        rating.className = "gallery-rating";
+        rating.setAttribute("aria-label", "Your rating: not rated");
+        rating.textContent = "Not rated";
+        figcaption.appendChild(rating);
+
+        figure.appendChild(img);
+        figure.appendChild(figcaption);
+        return figure;
+      }
+
+      function carNameExists(name) {
+        const existing = gallery.querySelectorAll(".gallery-item");
+        return Array.prototype.some.call(existing, function (item) {
+          return item.dataset.name.toLowerCase() === name.toLowerCase();
+        });
+      }
+
+      function addCarToGallery(car, persist) {
+        const item = createGalleryItem(car);
+        gallery.appendChild(item);
+        bindGalleryItem(item);
+
+        if (persist) {
+          const cars = loadCustomCars();
+          cars.push(car);
+          saveCustomCars(cars);
+        }
+      }
+
+      document.querySelectorAll(".gallery-item").forEach(bindGalleryItem);
+
+      loadCustomCars().forEach(function (car) {
+        if (!car || !car.name || carNameExists(car.name)) return;
+        addCarToGallery(car, false);
+      });
+
+      addCarForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const formData = new FormData(addCarForm);
+        const car = {
+          name: String(formData.get("name") || "").trim(),
+          make: String(formData.get("make") || "").trim(),
+          year: Number(formData.get("year")),
+          engine: String(formData.get("engine") || "").trim(),
+          description: String(formData.get("description") || "").trim(),
+          imageUrl: String(formData.get("imageUrl") || "").trim(),
+          alt: String(formData.get("name") || "").trim()
+        };
+
+        if (!car.name || !car.make || !car.engine || !car.description) {
+          addCarStatus.textContent = "Please fill in all fields.";
+          return;
+        }
+
+        if (!Number.isInteger(car.year) || car.year < 1886 || car.year > 2100) {
+          addCarStatus.textContent = "Enter a valid year.";
+          return;
+        }
+
+        if (!isValidImageUrl(car.imageUrl)) {
+          addCarStatus.textContent = "Enter a valid http or https image URL.";
+          return;
+        }
+
+        if (carNameExists(car.name)) {
+          addCarStatus.textContent = "A car with that name is already in the gallery.";
+          return;
+        }
+
+        addCarToGallery(car, true);
+        addCarForm.reset();
+        addCarStatus.textContent = car.name + " added to the gallery.";
       });
 
       ratingStars.addEventListener("click", function (event) {
