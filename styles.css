@@ -417,6 +417,122 @@ body.modal-open {
   display: none;
 }
 
+.rent-car {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid #8aada3;
+}
+
+.rent-heading {
+  font-size: 1.1rem;
+  color: #1f4d42;
+  margin-bottom: 0.65rem;
+}
+
+.rent-current {
+  margin-bottom: 0.75rem;
+  padding: 0.55rem 0.7rem;
+  background: rgba(45, 106, 90, 0.1);
+  border: 1px solid #8aada3;
+  border-radius: 4px;
+  color: #2a3d3a;
+  font-size: 0.95rem;
+}
+
+.rent-current[hidden] {
+  display: none;
+}
+
+.rent-form label {
+  display: block;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #4a6b64;
+  margin-bottom: 0.35rem;
+}
+
+.rent-fields {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+}
+
+@media (min-width: 28rem) {
+  .rent-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.rent-form input {
+  width: 100%;
+  font: inherit;
+  font-size: 0.95rem;
+  color: #1a2a2e;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid #8aada3;
+  border-radius: 4px;
+  background: #ffffff;
+}
+
+.rent-form input:focus-visible {
+  outline: 2px solid #2d6a5a;
+  outline-offset: 2px;
+}
+
+.rent-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.rent-form button[type="submit"] {
+  border: 1px solid #2d6a5a;
+  background: #2d6a5a;
+  color: #f3f8f6;
+  font: inherit;
+  font-size: 0.9rem;
+  padding: 0.5rem 0.9rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.rent-form button[type="submit"]:hover,
+.rent-form button[type="submit"]:focus-visible {
+  background: #1f4d42;
+  outline: 2px solid #2d6a5a;
+  outline-offset: 2px;
+}
+
+.rent-cancel {
+  border: 1px solid #8aada3;
+  background: transparent;
+  color: #2d6a5a;
+  font: inherit;
+  font-size: 0.9rem;
+  padding: 0.5rem 0.9rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.rent-cancel:hover,
+.rent-cancel:focus-visible {
+  background: rgba(45, 106, 90, 0.1);
+  outline: 2px solid #2d6a5a;
+  outline-offset: 2px;
+}
+
+.rent-cancel[hidden] {
+  display: none;
+}
+
+.rent-status {
+  margin-top: 0.55rem;
+  font-size: 0.9rem;
+  color: #4a6b64;
+  min-height: 1.2em;
+}
+
 @media (max-width: 32rem) {
   .modal-details {
     grid-template-columns: 1fr;
